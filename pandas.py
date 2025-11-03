@@ -119,33 +119,23 @@ def print_aligned_table(df, title=None):
 # -------------------------------
 # Main: beide(+1) Tabellen ausgeben
 # -------------------------------
-if 0:
-	if __name__ == "__main__":
-		meta_path = r"C:\Users\simon\AppData\Roaming\Python\Python311\site-packages\cayley\module_registry.json"
-		df_meta = load_meta_table(meta_path).sort_values(by="Status")
-		df_sysmod = sysmodules_table()
+if __name__ == "__main__":
+    meta_path = r"C:\Users\simon\AppData\Roaming\Python\Python311\site-packages\cayley\module_registry.json"
+    df_meta = load_meta_table(meta_path).sort_values(by="Status")
+    df_sysmod = sysmodules_table()
 
-		print_aligned_table(df_meta, title="Module Registry")
-		print_aligned_table(df_sysmod, title="sys.modules Overview")
+    print_aligned_table(df_meta, title="Module Registry")
+    print_aligned_table(df_sysmod, title="sys.modules Overview")
 
-else:
-	if __name__ == "__main__":
-		meta_path = r"C:\Users\simon\AppData\Roaming\Python\Python311\site-packages\cayley\module_registry.json"
-		df_meta = load_meta_table(meta_path).sort_values(by="Status")
-		df_sysmod = sysmodules_table()
+    # Dritte Tabelle: sortierte, einzigartige Verzeichnisse
+    unique_dirs = (
+        df_sysmod["Dir"]
+        .dropna()
+        .unique()
+        .tolist()
+    )
+    unique_dirs = sorted(set(unique_dirs))
 
-		print_aligned_table(df_meta, title="Module Registry")
-		print_aligned_table(df_sysmod, title="sys.modules Overview")
-
-		# Dritte Tabelle: sortierte, einzigartige Verzeichnisse
-		unique_dirs = (
-			df_sysmod["Dir"]
-			.dropna()
-			.unique()
-			.tolist()
-		)
-		unique_dirs = sorted(set(unique_dirs))
-
-		df_dirs = pd.DataFrame({"Dir": unique_dirs})
-		print_aligned_table(df_dirs, title="Unique Module Directories")
+    df_dirs = pd.DataFrame({"Dir": unique_dirs})
+    print_aligned_table(df_dirs, title="Unique Module Directories")
 
