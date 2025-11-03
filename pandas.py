@@ -28,34 +28,67 @@ def load_meta_table(json_path):
 # -------------------------------
 # sys.modules-Tabelle introspektiv
 # -------------------------------
-def sysmodules_table():
-    rows = []
+if 0:
+    def sysmodules_table():
+        rows = []
 
-    for name, mod in sys.modules.items():
-        file = getattr(mod, "__file__", None)
-        if not file:
-            mod_type = "builtin"
-            path = "n/a"
-        else:
-            path = os.path.abspath(file)
-            dirname = os.path.dirname(path)
-            basename = os.path.basename(path)
-            init_path = os.path.join(dirname, "__init__.py")
-            is_package = os.path.isfile(init_path)
-            mod_type = "package" if is_package else "standalone"
-            if ".zip" in path:
-                mod_type = "zip"
+        for name, mod in sys.modules.items():
+            file = getattr(mod, "__file__", None)
+            if not file:
+                mod_type = "builtin"
+                path = "n/a"
+            else:
+                path = os.path.abspath(file)
+                dirname = os.path.dirname(path)
+                basename = os.path.basename(path)
+                init_path = os.path.join(dirname, "__init__.py")
+                is_package = os.path.isfile(init_path)
+                mod_type = "package" if is_package else "standalone"
+                if ".zip" in path:
+                    mod_type = "zip"
 
-        rows.append({
-            "Name": name,
-            "Type": mod_type,
-            "File": path,
-            "Base": basename,
-            "Dir": dirname
-        })
+            rows.append({
+                "Name": name,
+                "Type": mod_type,
+                "File": path,
+                "Base": basename,
+                "Dir": dirname
+            })
 
-    df = pd.DataFrame(rows)
-    return df.sort_values(by="Type")
+        df = pd.DataFrame(rows)
+        return df.sort_values(by="Type")
+else:
+	def sysmodules_table():
+		rows = []
+
+		for name, mod in sys.modules.items():
+			file = getattr(mod, "__file__", None)
+
+			if not file:
+				mod_type = "builtin"
+				path = "n/a"
+				basename = ""
+				dirname = ""
+			else:
+				path = os.path.abspath(file)
+				dirname = os.path.dirname(path)
+				basename = os.path.basename(path)
+				init_path = os.path.join(dirname, "__init__.py")
+				is_package = os.path.isfile(init_path)
+				mod_type = "package" if is_package else "standalone"
+				if ".zip" in path:
+					mod_type = "zip"
+
+			rows.append({
+				"Name": name,
+				"Type": mod_type,
+				"File": path,
+				"Base": basename,
+				"Dir": dirname
+			})
+
+		df = pd.DataFrame(rows)
+		return df.sort_values(by="Type")
 
 # -------------------------------
 # Tabellendruck mit Ausrichtung
