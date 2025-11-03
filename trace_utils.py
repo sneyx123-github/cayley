@@ -2,17 +2,6 @@ import datetime
 import inspect
 import os
 
-#======
-__meta__ = {
-    "name": "trace_utils",
-    "requires": [],
-    "provides": [],
-    "resources": []
-}
-
-from cayley.module_registry import register_meta
-register_meta(__meta__)
-#=====
 
 def log_trace(msg, who=None):
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -27,3 +16,15 @@ def log_trace(msg, who=None):
 
     prefix = f"[{now}] {filename_fmt}::{funcname_fmt} [{who_fmt}]"
     print(f"{prefix} → {msg}")
+
+#======
+__meta__ = {
+    "name": "cayley.trace_utils",
+    "requires": [],
+    "provides": ["log_trace"],
+    "resources": []
+}
+
+from cayley.module_registry import register_meta
+register_meta(__meta__)
+#=====

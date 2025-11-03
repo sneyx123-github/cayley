@@ -78,7 +78,7 @@ class AgentFSM:
 
 #======
 __meta__ = {
-    "name": "fm_agent",
+    "name": "cayley.fm_agent",
     "requires": ["protocol_spec", "trace_utils"],
     "provides": ["AgentFSM"],
     "resources": []

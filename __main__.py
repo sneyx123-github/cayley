@@ -6,7 +6,7 @@ It could be evaluated by: ipython -i -m mypack ...
 
 #======
 __meta__ = {
-    "name": "__main__",
+    "name": "cayley.__main__",
     "requires": ["module_registry", "trace_utils"],
     "provides": [],
     "resources": []

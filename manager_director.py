@@ -75,7 +75,7 @@ class ManagerDirector:
 
 #======
 __meta__ = {
-    "name": "manager_director",
+    "name": "cayley.manager_director",
     "requires": ["protocol_spec", "trace_utils"],
     "provides": ["ManagerDirector"],
     "resources": []

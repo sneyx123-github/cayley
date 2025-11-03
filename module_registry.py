@@ -89,7 +89,7 @@ def init_registry(force=False):
 
 #======
 __meta__ = {
-    "name": "module_registry",
+    "name": "cayley.module_registry",
     "requires": ["trace_utils"],
     "provides": ["register_meta", "unregister_meta", "get_registry", "init_registry"],
     "resources": ["module_registry.json"]

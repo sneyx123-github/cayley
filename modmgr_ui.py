@@ -187,7 +187,7 @@ if 0:
 
 #======
 __meta__ = {
-    "name": "modmgr_ui",
+    "name": "cayley.modmgr_ui",
     "requires": ["module_registry", "trace_utils"],
     "provides": ["register", "unregister", "build_tree_from_registry"],
     "resources": ["thread:agent", "socket:tcp://*:5555"]

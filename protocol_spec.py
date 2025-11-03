@@ -75,7 +75,7 @@ def validate_params(cmd, params):
 
 #======
 __meta__ = {
-    "name": "protocol_spec",
+    "name": "cayley.protocol_spec",
     "requires": ["trace_utils"],
     "provides": ["ProtocolSpec"],
     "resources": []

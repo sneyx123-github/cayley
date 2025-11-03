@@ -25,7 +25,7 @@ __all__ = [
 
 #======
 __meta__ = {
-    "name": "__init__",
+    "name": "cayley.__init__",
     "requires": ["module_registry", "trace_utils"],
     "provides": [],
     "resources": []

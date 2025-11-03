@@ -1,5 +1,5 @@
 {
-  "module_registry": {
+  "cayley.module_registry": {
     "name": "cayley.module_registry",
     "requires": [
       "trace_utils"
@@ -14,7 +14,7 @@
       "module_registry.json"
     ]
   },
-  "__init__": {
+  "cayley.__init__": {
     "name": "cayley.__init__",
     "requires": [
       "module_registry",
@@ -23,7 +23,7 @@
     "provides": [],
     "resources": []
   },
-  "protocol_spec": {
+  "cayley.protocol_spec": {
     "name": "cayley.protocol_spec",
     "requires": [
       "trace_utils"
@@ -33,7 +33,7 @@
     ],
     "resources": []
   },
-  "fm_agent": {
+  "cayley.fm_agent": {
     "name": "cayley.fm_agent",
     "requires": [
       "protocol_spec",
@@ -60,13 +60,15 @@
       "socket:tcp://*:5555"
     ]
   },
-  "trace_utils": {
+  "cayley.trace_utils": {
     "name": "cayley.trace_utils",
     "requires": [],
-    "provides": [],
+    "provides": [
+      "log_trace"
+    ],
     "resources": []
   },
-  "manager_director": {
+  "cayley.manager_director": {
     "name": "cayley.manager_director",
     "requires": [
       "protocol_spec",
@@ -77,7 +79,7 @@
     ],
     "resources": []
   },
-  "modmgr_ui": {
+  "cayley.modmgr_ui": {
     "name": "cayley.modmgr_ui",
     "requires": [
       "module_registry",
@@ -93,7 +95,7 @@
       "socket:tcp://*:5555"
     ]
   },
-  "__main__": {
+  "cayley.__main__": {
     "name": "cayley.__main__",
     "requires": [
       "module_registry",
