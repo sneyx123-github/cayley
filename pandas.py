@@ -29,35 +29,6 @@ def load_meta_table(json_path):
 # sys.modules-Tabelle introspektiv
 # -------------------------------
 if 0:
-    def sysmodules_table():
-        rows = []
-
-        for name, mod in sys.modules.items():
-            file = getattr(mod, "__file__", None)
-            if not file:
-                mod_type = "builtin"
-                path = "n/a"
-            else:
-                path = os.path.abspath(file)
-                dirname = os.path.dirname(path)
-                basename = os.path.basename(path)
-                init_path = os.path.join(dirname, "__init__.py")
-                is_package = os.path.isfile(init_path)
-                mod_type = "package" if is_package else "standalone"
-                if ".zip" in path:
-                    mod_type = "zip"
-
-            rows.append({
-                "Name": name,
-                "Type": mod_type,
-                "File": path,
-                "Base": basename,
-                "Dir": dirname
-            })
-
-        df = pd.DataFrame(rows)
-        return df.sort_values(by="Type")
-else:
 	def sysmodules_table():
 		rows = []
 
@@ -89,6 +60,43 @@ else:
 
 		df = pd.DataFrame(rows)
 		return df.sort_values(by="Type")
+else:
+	def sysmodules_table():
+		rows = []
+
+		for name, mod in sys.modules.items():
+			file = getattr(mod, "__file__", None)
+
+			if not file:
+				mod_type = "builtin"
+				path = "n/a"
+				basename = ""
+				dirname = ""
+			else:
+				path = os.path.abspath(file)
+				dirname = os.path.dirname(path)
+				basename = os.path.basename(path)
+				init_path = os.path.join(dirname, "__init__.py")
+				is_package = os.path.isfile(init_path)
+				mod_type = "package" if is_package else "standalone"
+				if ".zip" in path:
+					mod_type = "zip"
+
+			# Cluster detection: first 2–3 segments of dotted name
+			parts = name.split(".")
+			cluster = ".".join(parts[:3]) if len(parts) >= 3 else ".".join(parts[:2]) if len(parts) >= 2 else parts[0]
+
+			rows.append({
+				"Name": name,
+				"Cluster": cluster,
+				"Type": mod_type,
+				"File": path,
+				"Base": basename,
+				"Dir": dirname
+			})
+
+		df = pd.DataFrame(rows)
+		return df.sort_values(by=["Cluster", "Name"])
 
 # -------------------------------
 # Tabellendruck mit Ausrichtung
@@ -116,17 +124,29 @@ def print_aligned_table(df, title=None):
         )
         print(line)
 
+if 1:
+    def cluster_summary(df):
+        return df.groupby("Cluster").agg({
+            "Name": "count",
+            "Type": lambda x: ", ".join(sorted(set(x))),
+            "Dir": lambda x: x.mode().iloc[0] if not x.mode().empty else "n/a"
+        }).rename(columns={"Name": "Module Count"})
+
+
+
 # -------------------------------
 # Main: beide(+1) Tabellen ausgeben
 # -------------------------------
 if __name__ == "__main__":
     meta_path = r"C:\Users\simon\AppData\Roaming\Python\Python311\site-packages\cayley\module_registry.json"
     df_meta = load_meta_table(meta_path).sort_values(by="Status")
-    df_sysmod = sysmodules_table()
-
     print_aligned_table(df_meta, title="Module Registry")
+
+    # ---
+    df_sysmod = sysmodules_table()
     print_aligned_table(df_sysmod, title="sys.modules Overview")
 
+    # ---
     # Dritte Tabelle: sortierte, einzigartige Verzeichnisse
     unique_dirs = (
         df_sysmod["Dir"]
@@ -139,3 +159,11 @@ if __name__ == "__main__":
     df_dirs = pd.DataFrame({"Dir": unique_dirs})
     print_aligned_table(df_dirs, title="Unique Module Directories")
 
+    # ---
+    # Vierte Tabelle
+    df_clust = cluster_summary(df_sysmod)
+    filtered = df_clust.loc[df_clust["Module Count"] > 1]
+    #print_aligned_table(df_clust, title="Recognized Package Cluster")
+    print_aligned_table(filtered, title="Recognized Package Cluster")
+
+    # ---
