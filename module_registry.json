@@ -1,0 +1,99 @@
+{
+  "module_registry": {
+    "name": "module_registry",
+    "requires": [
+      "module_registry",
+      "trace_utils"
+    ],
+    "provides": [],
+    "resources": []
+  },
+  "__init__": {
+    "name": "__init__",
+    "requires": [
+      "module_registry",
+      "trace_utils"
+    ],
+    "provides": [],
+    "resources": []
+  },
+  "protocol_spec": {
+    "name": "protocol_spec",
+    "requires": [
+      "trace_utils"
+    ],
+    "provides": [
+      "ProtocolSpec"
+    ],
+    "resources": []
+  },
+  "fm_agent": {
+    "name": "fm_agent",
+    "requires": [
+      "protocol_spec",
+      "trace_utils"
+    ],
+    "provides": [
+      "AgentFSM"
+    ],
+    "resources": []
+  },
+  "cayley.agent_controller": {
+    "name": "cayley.agent_controller",
+    "requires": [
+      "protocol_spec",
+      "trace_utils"
+    ],
+    "provides": [
+      "AgentController",
+      "AgentFSM",
+      "PROTOCOL_VERSION"
+    ],
+    "resources": [
+      "thread:agent",
+      "socket:tcp://*:5555"
+    ]
+  },
+  "trace_utils": {
+    "name": "trace_utils",
+    "requires": [],
+    "provides": [],
+    "resources": []
+  },
+  "manager_director": {
+    "name": "manager_director",
+    "requires": [
+      "protocol_spec",
+      "trace_utils"
+    ],
+    "provides": [
+      "ManagerDirector"
+    ],
+    "resources": []
+  },
+  "modmgr_ui": {
+    "name": "modmgr_ui",
+    "requires": [
+      "module_registry",
+      "trace_utils"
+    ],
+    "provides": [
+      "register",
+      "unregister",
+      "build_tree_from_registry"
+    ],
+    "resources": [
+      "thread:agent",
+      "socket:tcp://*:5555"
+    ]
+  },
+  "__main__": {
+    "name": "__main__",
+    "requires": [
+      "module_registry",
+      "trace_utils"
+    ],
+    "provides": [],
+    "resources": []
+  }
+}
