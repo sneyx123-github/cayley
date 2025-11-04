@@ -12,7 +12,22 @@ class ManagerDirector:
         self.poller = zmq.Poller()
         self.poller.register(self.socket, zmq.POLLIN)
         self.timeout = timeout
+        #-----
+        self.address = address
+        #-----
         log_trace("ManagerDirector initialized", who="MGR")
+
+    #-----
+    def recover(self):
+        log_trace("Recovering ManagerDirector socket", who="MGR")
+        self.poller.unregister(self.socket)
+        self.socket.setsockopt(zmq.LINGER, 0)
+        self.socket.close()
+        self.socket = self.context.socket(zmq.REQ)
+        self.socket.connect(self.address)
+        self.poller.register(self.socket, zmq.POLLIN)
+        log_trace("Socket recovery complete", who="MGR")
+    #-----
 
     def send(self, cmd, params=None):
         if params is None:
