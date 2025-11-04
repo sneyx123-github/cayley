@@ -44,14 +44,54 @@ def _check_integrity():
         _trace(f"Integrity check failed: {e}")
         return False
 
-def register_meta(meta):
-    _ensure_loaded()
-    name = meta.get("name")
-    if not name:
-        raise ValueError("Meta must include 'name'")
-    _registry[name] = meta
-    _save_registry()
-    _trace(f"Meta registered: {name}")
+if 1:
+    def register_meta(meta):
+        _ensure_loaded()
+        name = meta.get("name")
+        if not name:
+            raise ValueError("Meta must include 'name'")
+        _registry[name] = meta
+        _save_registry()
+        _trace(f"Meta registered: {name}")
+elif 0:
+    from fsm_engine import apply_event_to_module
+    from module_info import resolve_module_info
+
+    def register_meta(module_name, registry, spec):
+        meta = resolve_module_info(module_name)
+        registry[module_name] = meta
+
+        # FSM-Initialisierung
+        event = {"name": "load", "params": {}}
+        state, actions = apply_event_to_module(module_name, event, registry, spec)
+
+        registry[module_name]["fsm_state"] = state
+        registry[module_name]["fsm_action_log"] = actions
+else:
+    from fsm_engine import apply_event_to_module
+    from module_info import resolve_module_info
+    from cayley.modFSM_spec import modFSM_spec_prelife as default_spec
+
+    def register_meta(module_name, spec=default_spec):
+        _ensure_loaded()
+
+        if module_name not in _registry:
+            _registry[module_name] = {}
+
+        # introspektive Metadaten
+        meta = resolve_module_info(module_name)
+        _registry[module_name].update(meta)
+
+        # FSM-Initialisierung (optional)
+        if spec:
+            event = {"name": "load", "params": {}}
+            state, actions = apply_event_to_module(module_name, event, _registry, spec)
+            _registry[module_name]["fsm_state"] = state
+            _registry[module_name]["fsm_action_log"] = actions
+
+        _save_registry()
+        _trace(f"Meta registered: {module_name}")
+
 
 def unregister_meta(name):
     _ensure_loaded()

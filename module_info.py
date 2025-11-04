@@ -44,7 +44,15 @@ def hash_file(path: str) -> str:
     except Exception:
         return "missing"
 
-def scan_sysmodules() -> list:
+def scan_sysmodules():
     import sys
-    return [resolve_module_info(name) for name in sys.modules]
+    modules = []
+    for name in sys.modules:
+        if name == "__main__":
+            continue
+        try:
+            modules.append(resolve_module_info(name))
+        except Exception as e:
+            print(f"[warn] Skipped {name}: {e}")
+    return modules
 
