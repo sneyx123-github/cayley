@@ -1,6 +1,6 @@
 import threading
 import zmq
-import bpy
+#import bpy
 import json
 from cayley.protocol_spec import PROTOCOL_VERSION
 from cayley.fm_agent import AgentFSM  # deine FSM-Klasse
@@ -69,18 +69,23 @@ class AgentController:
         print("Agent ZMQ socket closed.")
 
 #---
-if 1:
-    # Initialisierung (einmalig)
-    bpy.app.driver_namespace["agent"] = AgentController()
-elif 0:
-    # Starten
-    bpy.app.driver_namespace["agent"].start()
-elif 1:
-    # Status prüfen
-    bpy.app.driver_namespace["agent"].status()
-elif 1:
-    # Stoppen
-    bpy.app.driver_namespace["agent"].stop()
+def agent_ctl():
+    import bpy
+
+    if 0:
+        # Initialisierung (einmalig)
+        bpy.app.driver_namespace["agent"] = AgentController()
+    elif 0:
+        # Starten
+        bpy.app.driver_namespace["agent"].start()
+    elif 0:
+        # Status prüfen
+        bpy.app.driver_namespace["agent"].status()
+    elif 0:
+        # Stoppen
+        bpy.app.driver_namespace["agent"].stop()
+    else:
+        print("AgentController is UNATTENDED")
 
 #------
 #
@@ -88,7 +93,7 @@ elif 1:
 #
 # "provides": {
 #     "classes": ["AgentController"],
-#     "fsm": ["FSM_AGENT"],
+#     "fsm": ["AgentFSM"],
 #     "constants": ["PROTOCOL_VERSION"]
 # }
 # 
