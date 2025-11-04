@@ -11,10 +11,11 @@ from cayley.fsm_engine import spec_to_dataframe
 
 def hh():
     print("Tabellenübersicht:")
-    print(" od  →  on disk Registry")
-    print(" sm  →  sys.modules mit Cluster-Erkennung")
-    print(" rg  →  Registry-Zustände (in-memory)")
-    print(" cs  →  Cluster-Zusammenfassung")
+    print(" od  → on disk Registry")
+    print(" sm  → sysmodules_tablesG")
+    print(" sm2 → sys.modules mit Cluster-Erkennung")
+    print(" rg  → Registry-Zustände (in-memory)")
+    print(" cs  → Cluster-Zusammenfassung")
     print(" fa  → FSM-Aktionslog")
     print(" st  → FSM-Zustandstabelle")
     print(" fm  → FSM-Specification")
@@ -29,6 +30,10 @@ def sm():
         df = sysmodules_table()
         print_aligned_table(df, title="sys.modules Overview")
     else:
+        df = pd.DataFrame(scan_sysmodules())
+        print(df[["name", "cluster", "mod_type", "file"]].sort_values(by="cluster").to_markdown(index=False))
+
+def sm2():
         df = pd.DataFrame(scan_sysmodules())
         print(df[["name", "cluster", "mod_type", "file"]].sort_values(by="cluster").to_markdown(index=False))
 
@@ -189,6 +194,7 @@ def main():
     hh()
     od()
     sm()
+    #sm2()
     rg()
     cs()
     fa()
