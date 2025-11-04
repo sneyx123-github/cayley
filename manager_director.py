@@ -41,9 +41,11 @@ class ManagerDirector:
                 return reply
             else:
                 log_trace(f"{cmd} → TIMEOUT", who="MGR")
+                self.recover()  # <– Socket reset
                 return {"status": "TIMEOUT", "result": {"reason": "No response"}}
         except Exception as e:
             log_trace(f"{cmd} → ERROR: {e}", who="MGR")
+            self.recover()  # <– auch bei ERROR
             return {"status": "ERROR", "result": {"error": str(e)}}
 
     # Core protocol events
