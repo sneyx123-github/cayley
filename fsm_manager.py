@@ -58,10 +58,14 @@ def flush():
     producer.flush()
 
 # Beispielkommandos
-if __name__ == "__main__":
+def tst1():
     send_command("ping")
     send_command("reset_fsm", {"reason": "manual test"})
     send_command("init", {"config": "default"})
     send_command("status")
     flush()
+
+if __name__ == "__main__":
+    tst1()
+    print("Test again with: tst1()")
 

@@ -7,19 +7,20 @@ from cayley.fsm_state import fsm
 logger = logging.getLogger("FSM_DISPATCHER")
 logger.setLevel(logging.INFO)
 
-# Redis for deduplication
-r = redis.Redis()
+if 0: # Redis for deduplication
+    r = redis.Redis()
 
 # Redis key for processed messages
 DEDUP_KEY = "processed_fsm_msgs"
 
-def is_duplicate(msg_id: str) -> bool:
-    """Check if message ID has already been processed."""
-    return r.sismember(DEDUP_KEY, msg_id)
+if 0: ## Redis avail?
+    def is_duplicate(msg_id: str) -> bool:
+        """Check if message ID has already been processed."""
+        return r.sismember(DEDUP_KEY, msg_id)
 
-def mark_processed(msg_id: str):
-    """Mark message ID as processed."""
-    r.sadd(DEDUP_KEY, msg_id)
+    def mark_processed(msg_id: str):
+        """Mark message ID as processed."""
+        r.sadd(DEDUP_KEY, msg_id)
 
 def dispatch_command(message: dict):
     """
@@ -42,9 +43,10 @@ def dispatch_command(message: dict):
         logger.warning("Missing msg_id or cmd in message.")
         return
 
-    if is_duplicate(msg_id):
-        logger.info(f"Duplicate message {msg_id} skipped.")
-        return
+    if 0: # Redis avail?
+        if is_duplicate(msg_id):
+            logger.info(f"Duplicate message {msg_id} skipped.")
+            return
 
     if not validate_message(message):
         logger.warning(f"Invalid message format: {message}")
@@ -67,7 +69,8 @@ def dispatch_command(message: dict):
             logger.warning(f"Unknown command '{cmd}'")
             return
 
-        mark_processed(msg_id)
+        if 0:       # Redis in framework required
+            mark_processed(msg_id)
 
     except Exception as e:
         logger.error(f"Error dispatching command '{cmd}': {e}")

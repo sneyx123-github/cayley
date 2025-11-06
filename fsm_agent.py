@@ -14,8 +14,8 @@ from cayley.fsm_protocol import validate_message
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("FSM_AGENT")
 
-# Redis for deduplication
-r = redis.Redis()
+if 0: # Redis for deduplication
+    r = redis.Redis()
 
 # Kafka consumer setup
 #----
@@ -58,20 +58,29 @@ elif 1:
 # Subscribe to FSM command topic
 consumer.subscribe(['fsm.commands'])
 
-def is_duplicate(msg_id: str) -> bool:
-    return r.sismember("processed_fsm_msgs", msg_id)
+if 0: # Redis avail?
+    def is_duplicate(msg_id: str) -> bool:
+        return r.sismember("processed_fsm_msgs", msg_id)
 
-def mark_processed(msg_id: str):
-    r.sadd("processed_fsm_msgs", msg_id)
+    def mark_processed(msg_id: str):
+        r.sadd("processed_fsm_msgs", msg_id)
 
 def process_message(message):
     try:
-        value = message.value()
+        if 0:                           # bytes
+            value = message.value()
+        else:                           # json
+            value = json.loads(message.value().decode("utf-8"))
+        if 0:   # Decode Received message
+            logger.error(f"CP1")
+            logger.error(value)
+
         msg_id = value.get("msg_id") or str(message.offset())
 
-        if is_duplicate(msg_id):
-            logger.info(f"Duplicate message {msg_id} skipped.")
-            return
+        if 0:                           # Redis in framework required
+            if is_duplicate(msg_id):
+                logger.info(f"Duplicate message {msg_id} skipped.")
+                return
 
         if not validate_message(value):
             logger.warning(f"Invalid message format: {value}")
@@ -79,7 +88,8 @@ def process_message(message):
 
         logger.info(f"Processing FSM command: {value['cmd']} from {value['sender']}")
         dispatch_command(value)
-        mark_processed(msg_id)
+        if 0: # Redis avail?
+            mark_processed(msg_id)
 
     except Exception as e:
         logger.error(f"Error processing message: {e}")
